@@ -1,0 +1,30 @@
+# function computeAuthenticateUser is used to retrieve the authentication
+# cookie from the Oracle compute cloud API which is needed to ensure you
+# can make the needed calls to the REST API. You can call this function
+# every time you need a cookie value to make a call to the REST API.
+ function computeAuthenticateUser {
+   ComputeCookie="$(curl -i -s -X POST -H "Content-Type: application/oracle-compute-v3+json" -d '{"user":"/Compute-'"$IDENTITYDOMAIN"'/'"$USERNAME"'","password":"'"$PASSWORD"'"}' $RESTENDPOINT/authenticate/ | grep Set-Cookie | cut -c 13-)"
+   curlStatus=$?
+
+    if [ "$curlStatus" -eq 0 ]; then
+      echo $ComputeCookie
+    else
+        echo "ERROR"
+    fi
+ }
+
+
+# function computeRawInstanceGetAll will retrieves the names of instances
+# and subcontainers that you can access in the specified container. This
+# version will return the raw data as it comes from the Oracle public cloud
+ function computeRawInstanceGetAll {
+   authCookie=$(computeAuthenticateUser)
+   apiReturnValue="$(curl -s -X GET -H "Cookie: $authCookie" -H "Accept: application/oracle-compute-v3+json" $RESTENDPOINT/instance/Compute-$IDENTITYDOMAIN/$USERNAME/)"
+   curlStatus=$?
+
+    if [ "$curlStatus" -eq 0 ]; then
+      echo $apiReturnValue
+    else
+        echo "ERROR"
+    fi
+ }
