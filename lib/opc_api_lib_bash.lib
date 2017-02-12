@@ -1,9 +1,50 @@
+# NAME:
+#   opc_api_lib_bash.lib
+#
+# DESC:
+# Open Oracle Public Cloud API library - bash version. The library provide
+# the basic building blocks for interacting with the API's for the Oracle
+# public cloud. This specific version is for usage with bash scripting and
+# has been developed and tested with Oracle Linux.
+#
+# LOG:
+# VERSION---DATE--------NAME-------------COMMENT
+# 0.1       13NOV2016   Johan Louwers    Initial upload to github.com
+# 0.2       12FEB2017   Johan Louwers    improved function paramter call
+#
+# LICENSE:
+# Copyright (C) 2016  Johan Louwers
+#
+# This code is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This code is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this code; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+# *
+# */
+
+
 # function computeAuthenticateUser is used to retrieve the authentication
 # cookie from the Oracle compute cloud API which is needed to ensure you
 # can make the needed calls to the REST API. You can call this function
 # every time you need a cookie value to make a call to the REST API.
- function computeAuthenticateUser {
-   ComputeCookie="$(curl -i -s -X POST -H "Content-Type: application/oracle-compute-v3+json" -d '{"user":"/Compute-'"$IDENTITYDOMAIN"'/'"$USERNAME"'","password":"'"$PASSWORD"'"}' $RESTENDPOINT/authenticate/ | grep Set-Cookie | cut -c 13-)"
+#
+# The function requires the following parameters inputs;
+# - identity domain
+# - username
+# - password
+# - REST-endpoint
+#
+ function computeAuthenticateUser () {
+   ComputeCookie="$(curl -i -s -X POST -H "Content-Type: application/oracle-compute-v3+json" -d '{"user":"/Compute-'"$1"'/'"$2"'","password":"'"$3"'"}' $4/authenticate/ | grep Set-Cookie | cut -c 13-)"
    curlStatus=$?
 
     if [ "$curlStatus" -eq 0 ]; then
@@ -14,12 +55,18 @@
  }
 
 
-# function computeRawInstanceGetAll will retrieves the names of instances
+# Function computeRawInstanceGetAll will retrieves the names of instances
 # and subcontainers that you can access in the specified container. This
 # version will return the raw data as it comes from the Oracle public cloud
- function computeRawInstanceGetAll {
-   authCookie=$(computeAuthenticateUser)
-   apiReturnValue="$(curl -s -X GET -H "Cookie: $authCookie" -H "Accept: application/oracle-compute-v3+json" $RESTENDPOINT/instance/Compute-$IDENTITYDOMAIN/$USERNAME/)"
+#
+# The function requries the following parameters inputs;
+# - identity domain
+# - username
+# - REST-endpoint
+# - authCookie
+#
+ function computeRawInstanceGetAll () {
+   apiReturnValue="$(curl -s -X GET -H "Cookie: $4" -H "Accept: application/oracle-compute-v3+json" $3/instance/Compute-$1/$2/)"
    curlStatus=$?
 
     if [ "$curlStatus" -eq 0 ]; then
