@@ -4,7 +4,7 @@ Open Oracle Public Cloud API library to provide standard functions to be used wh
 ## Documentation
 All documentation on the main release will be maintained under the documentation section in a markdown format.
 
-[main documentation](./documentation/README.md)
+[OPC_API_LIB main documentation](./documentation/README.md)
 
 ### Official Oracle Documentation
 [REST API for Oracle Compute Cloud Service](https://docs.oracle.com/cloud/latest/stcomputecs/STCSA/toc.htm)
