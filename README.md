@@ -2,4 +2,4 @@
 Open Oracle Public Cloud API library to provide standard functions to be used when scripting againt the API from the Oracle Public Cloud
 
 ## Documentation
-[main documentation](./documentation/readme.md)
+[main documentation](./documentation/README.md)
