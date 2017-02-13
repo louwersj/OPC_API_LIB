@@ -10,4 +10,4 @@ All documentation on the main release will be maintained under the documentation
 [REST API for Oracle Compute Cloud Service](https://docs.oracle.com/cloud/latest/stcomputecs/STCSA/toc.htm)
 
 ## Disclaimer
-This is an open source project which is community driven and is not a part of the official Oracle software stack. The full GNU GPL license as outlined in this github project is applicable. Do review the license documentation before using the software. 
+This is an open source project which is community driven and is not a part of the official Oracle software stack. The full GNU GPL license as outlined in this github project is applicable. Do review the license documentation before using the software which is located at [this location](LICENSE)
