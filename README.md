@@ -8,6 +8,7 @@ All documentation on the main release will be maintained under the documentation
 
 ### Official Oracle Documentation
 [REST API for Oracle Compute Cloud Service](https://docs.oracle.com/cloud/latest/stcomputecs/STCSA/toc.htm)
+
 [Oracle PaaS Service Manager Command Line Interface](http://docs.oracle.com/en/cloud/paas/java-cloud/pscli/paas-service-manager-command-line-interface-reference.pdf)
 
 ## Other tooling
