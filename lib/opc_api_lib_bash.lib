@@ -11,6 +11,7 @@
 # VERSION---DATE--------NAME-------------COMMENT
 # 0.1       13NOV2016   Johan Louwers    Initial upload to github.com
 # 0.2       12FEB2017   Johan Louwers    improved function paramter call
+# 0.3       25FEB2017   Johan Louwers    added errorExit function.
 #
 # LICENSE:
 # Copyright (C) 2016  Johan Louwers
