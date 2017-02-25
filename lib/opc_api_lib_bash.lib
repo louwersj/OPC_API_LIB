@@ -32,6 +32,20 @@
 # */
 
 
+# function errorExit is used as the generic error handling action for
+# errors that are critical and require an exit. Main reason for a more
+# central function is that additional logging options can easily be 
+# included in future releases of the lib. Ensuring your own code will
+# also use the errorExit function is good practice as all internal lib
+# functions will also make use of this function. By using this function
+# in your own code you will have a unified way of logging througout your
+# entire code deployment.
+ function errorExit () {
+  echo "ERROR - SEVERITY CRITICAL - EXIT - OPC_API_LIB -  $1" 1>&2
+  exit 1
+ }
+
+
 # function computeAuthenticateUser is used to retrieve the authentication
 # cookie from the Oracle compute cloud API which is needed to ensure you
 # can make the needed calls to the REST API. You can call this function
