@@ -117,8 +117,8 @@
 # - (2) username
 # - (3) volume name (max 256 char)
 # - (4) bootable flag string (true/false)
-# - (5) image list (name)
-# - (6) image list version (ID)
+# - (5) image list (name) provide NULL if not needed
+# - (6) image list version (ID) provide NULL if not needed
 # - (7) latency (standard or low)
 # - (8) storage size including indicator
 #   - indicator can be B, K, M, G or T (upper or lower)
@@ -155,8 +155,11 @@
  fi
 
 
-# define which storage properties we need to include based 
-# upon the value of parameter 7 (latency).
+# define which storage properties we need to include
+# based upon the value of parameter 7 (latency). This
+# will later be used to populate the JSON value inside
+# the jsonAttrProperties variable which is used in the
+# generation of the JSON payload.
   if [ "$7" == "default" ]
   then
    valueProperties="/oracle/public/storage/default"
@@ -168,17 +171,35 @@
   fi
 
 
-# Generate the JSON payLoad for the actual object creation
-# of a storage volume.
+# build the different JSON attributes to be used in
+# the JSON payload generation. In some cases variables
+# will be empty (for example imagelist in case bootable
+# is set to false).
+  jsonAttrName=" "\""name"\"": "\""/Compute-$1/$2/$3"\"","
+  jsonAttrBootable=" "\""bootable"\"": "\""$4"\"","
+  jsonAttrImagelist=""
+  jsonAttrImagelistEntry=""
+   if [ "$4" == "true" ]
+   then
+    jsonAttrImagelist=" "\""imagelist"\"": "\""$5"\""",
+    jsonAttrImagelistEntry=" "\""imagelist_entry"\"": "\""$6"\""",
+   fi
+  jsonAttrProperties=" "\""properties"\"": ["\""$valueProperties"\""],"
+  jsonAttrSize=" "\""size"\"": "\""$8"\"","
+  jsonAttrDescription=" "\""description"\"": "\""$9"\"""
+
+
+# Generate the JSON payLoad for the actual object
+# creation of a storage volume.
   read -d '' generatedJson << EOF
    {
-    "name": "/Compute-$1/$2/$3",
-    "bootable": $4,
-    "imagelist": "$5",
-    "imagelist_entry": "$6",
-    "properties": ["$valueProperties"],
-    "size": "$8",
-    "description": "$9"
+   $jsonAttrName
+   $jsonAttrBootable
+   $jsonAttrImagelist
+   $jsonAttrImagelistEntry
+   $jsonAttrProperties
+   $jsonAttrSize
+   $jsonAttrDescription
    }
 EOF
 
