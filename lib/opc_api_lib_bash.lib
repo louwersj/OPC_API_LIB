@@ -9,9 +9,10 @@
 #
 # LOG:
 # VERSION---DATE--------NAME-------------COMMENT
-# 0.1       13NOV2016   Johan Louwers    Initial upload to github.com
-# 0.2       12FEB2017   Johan Louwers    improved function paramter call
+# 0.1       13NOV2016   Johan Louwers    Initial upload to github.com.
+# 0.2       12FEB2017   Johan Louwers    improved function paramter call.
 # 0.3       25FEB2017   Johan Louwers    added errorExit function.
+# 0.4       25FEB2017   Johan Louwers    added genOplanObjectStorVol function. 
 #
 # LICENSE:
 # Copyright (C) 2016  Johan Louwers
@@ -33,6 +34,8 @@
 # */
 
 
+
+#-------------------------------------------------------------------------
 # function errorExit is used as the generic error handling action for
 # errors that are critical and require an exit. Main reason for a more
 # central function is that additional logging options can easily be 
@@ -45,8 +48,11 @@
   echo "ERROR - SEVERITY CRITICAL - EXIT - OPC_API_LIB -  $1" 1>&2
   exit 1
  }
+#-------------------------------------------------------------------------
 
 
+
+#-------------------------------------------------------------------------
 # function computeAuthenticateUser is used to retrieve the authentication
 # cookie from the Oracle compute cloud API which is needed to ensure you
 # can make the needed calls to the REST API. You can call this function
@@ -68,8 +74,11 @@
         echo "ERROR"
     fi
  }
+#-------------------------------------------------------------------------
 
 
+
+#-------------------------------------------------------------------------
 # Function computeRawInstanceGetAll will retrieves the names of instances
 # and subcontainers that you can access in the specified container. This
 # version will return the raw data as it comes from the Oracle public cloud
@@ -90,3 +99,89 @@
         echo "ERROR"
     fi
  }
+#-------------------------------------------------------------------------
+
+
+
+#-------------------------------------------------------------------------
+# Function genOplanObjectStorVol will generate the oplan
+# object specification for a storage volume in the Oracle
+# compute Cloud. The object specification needs to be
+# placed within the specific storage volume oplan of the
+# orchestartion payload to form a valid JSON payload to
+# be used as a orchestration in the Oracle Cloud.
+#
+# The function requries the following parameters inputs
+# in this order;
+# - (1) identity domain
+# - (2) username
+# - (3) volume name (max 256 char)
+# - (4) bootable flag string (true/false)
+# - (5) image list (name)
+# - (6) image list version (ID)
+# - (7) latency (standard or low)
+# - (8) storage size including indicator
+#   - indicator can be B, K, M, G or T (upper or lower)
+# - (9) description max 256 char)
+ function genOplanObjectStorVol () {
+
+
+# function specific variables
+  funcParamsExpected=9
+  funcName="genOplanObjectStorVol"
+
+
+# function paramater checking to ensure we recieved the
+# correct number of parameters and execute a certain
+# level of content checking on the paramter content.
+  if [ "$#" -ne $funcParamsExpected ]
+  then
+    errorExit "Function $funcName did not recieve the expected number of paramaters."
+  elif [ "${#3}" -gt 256 ]
+  then
+    errorExit "Function $funcName received paramater 3 (volume name) is longer than allowed (max 256 chars)."
+  elif [ "$4" != "true" ] && [ "$4" != "false" ]
+  then
+    errorExit "Function $funcName received paramater 4 (bootable flag) with incorrect value. Value given: $4."
+  elif [ "$7" != "default" ] && [ "$7" != "low" ]
+  then
+    errorExit "Function $funcName received paramater 7 (latency) with value other than -default- or -low-. Value given $7."
+  elif echo "B K M G T b k m g t" | grep -v ${8: -1} > /dev/null;
+  then
+    errorExit "Function $funcName received paramater 8 (storage size) with an incorrect value indicator. Value given $8."
+  elif [ "${#9}" -gt 256 ]
+  then
+    errorExit "Function $funcName received paramater 9 (description) is longer than allowed (max 256 chars)."
+ fi
+
+
+# define which storage properties we need to include based 
+# upon the value of parameter 7 (latency).
+  if [ "$7" == "default" ]
+  then
+   valueProperties="/oracle/public/storage/default"
+  elif [ "$7" == "low" ]
+  then
+   valueProperties="/oracle/public/storage/latency"
+  else
+   errorExit "Function $funcName encounterd an issue while setting valueProperties for storage latency"
+  fi
+
+
+# Generate the JSON payLoad for the actual object creation
+# of a storage volume.
+  read -d '' generatedJson << EOF
+   {
+    "name": "/Compute-$1/$2/$3",
+    "bootable": $4,
+    "imagelist": "$5",
+    "imagelist_entry": "$6",
+    "properties": ["$valueProperties"],
+    "size": "$8",
+    "description": "$9"
+   }
+EOF
+
+echo $generatedJson
+ }
+ #-------------------------------------------------------------------------
