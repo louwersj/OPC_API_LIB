@@ -13,6 +13,7 @@
 # 0.2       12FEB2017   Johan Louwers    improved function paramter call.
 # 0.3       25FEB2017   Johan Louwers    added errorExit function.
 # 0.4       25FEB2017   Johan Louwers    added genOplanObjectStorVol function. 
+# 0.5       26FEB2017   Johan Louwers    added genOplan function.
 #
 # LICENSE:
 # Copyright (C) 2016  Johan Louwers
@@ -205,4 +206,85 @@ EOF
 
 echo $generatedJson
  }
- #-------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
+
+#-------------------------------------------------------------------------
+# Function genOplan will generate the oplan JSON
+# payload The oplan will  need to conatin the
+# obect(s) specifications for one or more objects of the
+# same object type. different object types will require
+# mulitple oplans in a single orchestration.
+#
+# The object specification(s) need to be provided as one
+# single string paramter. One can create the specs by
+# hand or use the function genOplanObjectStorVol to
+# ensure a valid object specification is created.
+#
+# the used object type needs to be a valid object type
+# as recognized by the Oracle Public Cloud. A check will
+# be done to verify a valid object type is provided.
+#
+# The function requries the following parameters inputs
+# in this order;
+# - (1) label (desc of the oplan)
+# - (2) Valid object type
+# - (3) Object specification (JSON string)
+ function genOplan () {
+
+# function specific variables
+  funcParamsExpected=3
+  funcName="genOplan"
+
+  objTypes=(
+            "integrations/osscontainer"
+            "ip/reservation"
+            "launchplan"
+            "network/v1/acl"
+            "network/v1/ipaddressprefixset"
+            "network/v1/ipassociation"
+            "network/v1/ipnetwork"
+            "network/v1/ipnetworkexchange"
+            "network/v1/ipreservation"
+            "network/v1/route"
+            "network/v1/secprotocol"
+            "network/v1/secrule"
+            "network/v1/vnicset"
+            "orchestration"
+            "secapplication"
+            "seciplist"
+            "seclist"
+            "secrule"
+            "storage/volume"
+           )
+
+# function parameter checking to ensure we recieved the
+# correct number of parameters and execute a certain
+# level of content checking on the parameter content.
+  if [ "$#" -ne $funcParamsExpected ]
+  then
+    errorExit "Function $funcName did not recieve the expected number of paramaters."
+  elif echo ${objTypes[*]} | grep -v ${2,,} > /dev/null;
+  then
+   errorExit "Function $funcName provided object type is not recognized. value provided : $2 ."
+  fi
+
+# Generate the JSON payLoad for the actual oplan
+# this will include the object specifications of
+# one ore more individual objects as provided by
+# parameter 3. Parameter 3 needs to be a JSON
+# payload to be included as the content of the
+# "objects" section.
+  read -d '' generatedJson << EOF
+            {
+             "label": "$1",
+             "obj_type": "${2,,}",
+             "objects": [
+                        $3
+                        ]
+            }
+EOF
+ echo $generatedJson
+ }
+#-------------------------------------------------------------------------
