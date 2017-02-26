@@ -3,7 +3,7 @@ This documentation aims to provide as much information as possible on the primar
 
 ## Table of Contents
 ##1. Function overview
-* [Function computeAuthenticateUser](computeAuthenticateUser)
+* [Function computeAuthenticateUser](function/computeAuthenticateUser)
 * Function computeRawInstanceGetAll
 * Function errorExit
 * Function genOplan
