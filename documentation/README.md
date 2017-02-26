@@ -3,10 +3,11 @@ This documentation aims to provide as much information as possible on the primar
 
 ## Table of Contents
 ##1. Function overview
-* Function errorExit
-* Function computeAuthenticateUser
+* [Function computeAuthenticateUser](computeAuthenticateUser)
 * Function computeRawInstanceGetAll
-* Function genOplanObjectStorVol
+* Function errorExit
 * Function genOplan
+* Function genOplanObjectStorVol
+
 
 
