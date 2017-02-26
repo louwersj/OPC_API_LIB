@@ -7,5 +7,6 @@ This documentation aims to provide as much information as possible on the primar
 * [Function computeRawInstanceGetAll](function/computeRawInstanceGetAll)
 * [Function errorExit](function/errorExit)
 * [Function genOplan](function/genOplan)
-* [Function genOplanObjectStorVol](function/genOplanObjectStorVol)
+* [Function genOplanObjectStorVol](function/genOplanObjectStorVol) 
+
 ##2. Code examples
